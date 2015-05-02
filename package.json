@@ -1,0 +1,8 @@
+{
+  "name": "olio-arango",
+  "version": "0.0.1",
+  "dependencies": {
+    "aqb": "^1.10.0",
+    "arangojs": "^3.5.1"
+  }
+}
