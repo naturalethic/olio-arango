@@ -52,3 +52,9 @@ export destroy = (name, properties = {}) ->*
   q = aqb.for(\o).in(name)
   q = aqb-simple-filter q, properties
   yield query(q.remove(\o).in(name))
+
+export update = (doc) ->*
+  first yield query """
+    UPDATE @key WITH @doc IN #{doc._id.split '/' .0} OPTIONS { keepNull: false } LET updated = NEW RETURN updated
+  """, key: doc._key, doc: doc
+
