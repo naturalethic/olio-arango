@@ -1,4 +1,5 @@
 require! \crypto
+require! \base32
 require! \arangojs
 require! \aqb
 
@@ -18,19 +19,13 @@ export connect = (name = olio.config.db.name) ->*
   |> map -> [ it.name, it ]
   |> pairs-to-obj
 
-export generate-id = ->
-  do
-    id = crypto.random-bytes(4).to-string(\base64).substr(0, 6)
-  while !/^[a-zA-Z0-9]{6}/.test id
-  id
-
 export query = ->*
   yield (yield db.query ...&).all!
 
 export create = (name, properties = {}) ->*
   if not collections[name]
     collections[name] = yield db.create-collection name
-  first(yield query(aqb.insert(\@o).into(name).return-new(\o), o: { _key: generate-id! } <<< properties))
+  first(yield query(aqb.insert(\@o).into(name).return-new(\o), o: { _key: (base32.encode crypto.random-bytes 6) } <<< properties))
 
 aqb-simple-filter = (q, properties) ->
   for key, val of properties
